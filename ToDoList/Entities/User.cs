@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Entities;
 
@@ -7,5 +8,9 @@ public class User : IdentityUser //domyslnie id to string IdentityUser<int> wted
 {
     public string firstName { get; set; }
     public string lastName { get; set; }
+
     public ICollection<TaskList> TaskList { get; set; } = new List<TaskList>(); //IColection to interfejs a list to implementja
+    
+
 }
+
