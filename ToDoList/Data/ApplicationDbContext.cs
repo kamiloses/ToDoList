@@ -18,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<ToDoItem> ToDoItems { get; set; }
 
 
-//fluent api
+//fluent api to na dole , alternatywą są Atrybuty (np. [Key], [Required], [MaxLength]
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
@@ -39,6 +39,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
         // ToDoItem <==> User juz nie musze 
         base.OnModelCreating(modelBuilder);
 
+        
+        // SEEDOWANIE (Na początku migracji , aktualizacji pojawią sie dane)
+        // modelBuilder.Entity<User>().HasData(
+        //     new User { Id = "f8a460a3-97f8-41d6-a7d1-bfa3d9e3d94a", UserName = "admin", FirstName = "John", LastName = "Doe", Email = "admin@example.com" },
+        //     new User { Id = "1d69b95e-d6ec-4b98-a574-02a59d2d1b2f", UserName = "jane_doe", FirstName = "Jane", LastName = "Doe", Email = "jane@example.com" }
+        // );
 
 
     }
