@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ToDoList.Data;
 using ToDoList.Entities;
 
@@ -29,50 +30,135 @@ public class TaskListService {
 
     public TaskList Create(TaskList taskList)
     {
-        throw new NotImplementedException();
-    }
+        try
+        {
+            var added = _context.TaskLists.Add(taskList).Entity;
+            _context.SaveChanges();
+            return added;
+        }
+        catch (DbUpdateException ex) {
+            throw new InvalidOperationException("An error occurred while saving the task list.", ex); }}
 
+    
+    
     public bool Update(TaskList taskList)
     {
-        throw new NotImplementedException();
+        //jeśli chcesz znaleźć obiekt po jego Id, wystarczy, że przekazujesz to Id jako argument w metodzie Find():
+        try
+        {
+            
+            var existingTaskList = _context.TaskLists.Find(taskList.Id);
+        
+            if (existingTaskList == null)
+            {
+                return false;
+            }
+
+            existingTaskList.Title = taskList.Title; 
+
+            _context.SaveChanges();
+
+            return true; 
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new InvalidOperationException("An error occurred while updating the task list.", ex);
+        }
     }
 
-    public bool Delete(string id, string userId)
+    public bool DeleteTaskById(string id)
     {
-        throw new NotImplementedException();
+        
+        var taskList = _context.TaskLists.Find(id);
+        _context.TaskLists.Remove(taskList);
+    
+        // Zapisz zmiany w bazie danych
+        var result = _context.SaveChanges();
+    
+        // Jeśli zapisano co najmniej jedną zmianę, zwróć true
+        return result > 0;
+        
     }
     
     // ==========================
     // ASYNC
     // ==========================
-    
-    
-    
-    
-    
-    public IEnumerable<TaskList> GetAllTasksListAsync()
-    { }
+
+
+
+
+
+    public async Task<IEnumerable<TaskList>> GetAllTasksListAsync()
+    {
+
+        return await _context.TaskLists.AsNoTracking().ToListAsync();
+    }
     
 
-    public Task<IEnumerable<TaskList>> GetAllByUserAsync(string userId)
+    public async Task<IEnumerable<TaskList>> GetAllByUserAsync(string userId)
     {
-        throw new NotImplementedException();
+   
+        return await _context.TaskLists.AsNoTracking().Where(t => t.OwnerId == userId).ToListAsync();
+        
     }
 
 
 
-    public Task<TaskList> CreateAsync(TaskList taskList)
+    public async Task<TaskList> CreateAsync(TaskList taskList)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _context.TaskLists.AddAsync(taskList);
+        
+            await _context.SaveChangesAsync();
+
+            return taskList;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("An error occurred while saving the task list.", ex);
+        }
     }
 
-    public Task<bool> UpdateAsync(TaskList taskList)
+    public async Task<bool> UpdateAsync(TaskList taskList)
     {
-        throw new NotImplementedException();
+
+        try
+        {
+            TaskList? existingTaskList = await _context.TaskLists.FindAsync(taskList.Id);
+        
+            if (existingTaskList == null)
+            {
+                return false; 
+            }
+        
+            existingTaskList.Title = taskList.Title;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("An error occurred while updating the task list.", ex);
+        }
     }
 
-    public Task<bool> DeleteAsync(string id, string userId)
+    public async Task<bool> DeleteAsync(string id)
     {
+        var existingTaskList = await _context.TaskLists
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (existingTaskList == null)
+            return false;
+
+        _context.TaskLists.Remove(existingTaskList);
+        await _context.SaveChangesAsync();
+
+        return true; 
+        
+        
+        
         throw new NotImplementedException();
     }
 }
