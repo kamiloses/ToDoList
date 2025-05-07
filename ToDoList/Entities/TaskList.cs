@@ -3,7 +3,7 @@
     public class TaskList
     {
         //TODO EF STORE PROC JESZCZE ZROB ORAZ INCLUDING
-        //Trackowanie/NoTracking Eager 2/  Lazy i Explicit Loading /3 Asynchroniczność (async/await)
+        //2 Eager   Lazy i Explicit Loading
 
 
       

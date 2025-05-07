@@ -35,6 +35,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .WithMany(user => user.TaskList)
             .HasForeignKey(taskList => taskList.OwnerId)
             .OnDelete(DeleteBehavior.Cascade);
+        
         //jezeli skonfigurowac taskList<==> toDoItem to nie musze konfigurować juz na odwrót ponownie
         // ToDoItem <==> User juz nie musze 
         base.OnModelCreating(modelBuilder);
@@ -46,7 +47,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
         //     new User { Id = "1d69b95e-d6ec-4b98-a574-02a59d2d1b2f", UserName = "jane_doe", FirstName = "Jane", LastName = "Doe", Email = "jane@example.com" }
         // );
 
-
+ 
     }
 }
 //najpierw podaje default connection i rejestruje w program cs. potem tworze migracje a potem updatuje by sie
